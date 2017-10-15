@@ -1,0 +1,13 @@
+{
+    "name": "rozbehsharahi/meedia",
+    "description": "Compressed synchronisation between live and development environments.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rozbeh Chiryai Sharahi",
+            "email": "rozbeh.sharahi@turbinekreuzberg.com"
+        }
+    ],
+    "require": {}
+}
