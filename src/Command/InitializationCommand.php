@@ -2,6 +2,7 @@
 
 namespace RozbehSharahi\Meedia\Command;
 
+use RozbehSharahi\Meedia\DummyGenerator\ImageDummyGenerator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -80,7 +81,10 @@ class InitializationCommand extends AbstractCommand
             'host' => $arguments['host'],
             'user' => $arguments['user'],
             'source' => $arguments['source'],
-            'destination' => $arguments['destination']
+            'destination' => $arguments['destination'],
+            'generators' => [
+                ImageDummyGenerator::class
+            ]
         ], JSON_PRETTY_PRINT));
 
         if (!empty($options['password'])) {

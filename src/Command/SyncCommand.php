@@ -35,6 +35,8 @@ class SyncCommand extends AbstractCommand
 
         $configuration = $this->getConfiguration();
 
+        $output->writeln('Check configuration file...');
+
         $this->assertConfiguration($configuration);
 
         $ssh = $this->getSsh($configuration);
@@ -49,15 +51,13 @@ class SyncCommand extends AbstractCommand
             $tree = $treeLock;
         } else {
             $tree = $this->getTree($ssh, $configuration->source);
+            $output->writeln('Create lock file...');
+            $this->createLock($tree);
         }
 
-        $this->createLock($tree);
+        $output->writeln('Create dummy files...');
 
-        $dummyCreator = new DummyCreator(
-            $configuration->destination,
-            $tree,
-            [new ImageDummyGenerator()]
-        );
+        $dummyCreator = new DummyCreator($configuration->destination, $tree, $this->getGenerators($configuration));
 
         $dummyCreator->create();
 
@@ -88,6 +88,10 @@ class SyncCommand extends AbstractCommand
         if (empty($configuration->destination)) {
             throw new \Exception('meedia.json:destination must not be empty');
         }
+
+        if (empty($configuration->generators)) {
+            throw new \Exception('meedia.json:generators must not be empty');
+        }
     }
 
     /**
@@ -108,7 +112,7 @@ class SyncCommand extends AbstractCommand
 
             // gifs will return for every frame width, and height, therefor we have to take the last part of the array
             // to get the path
-            $path = $info[count($info)-1];
+            $path = $info[count($info) - 1];
 
             // Assert correct format
             if (empty($width) || empty($height) || empty($path)) {
@@ -137,8 +141,23 @@ class SyncCommand extends AbstractCommand
     protected function getTreeLock()
     {
         if (file_exists('meedia-lock.json')) {
-            return json_decode(file_get_contents('meedia-lock.json'),true);
+            return json_decode(file_get_contents('meedia-lock.json'), true);
         }
         return null;
+    }
+
+    /**
+     * Get generators by configuration
+     *
+     * @param \stdClass $configuration
+     * @return array
+     */
+    protected function getGenerators(\stdClass $configuration)
+    {
+        $generators = [];
+        foreach ($configuration->generators as $generator) {
+            $generators[] = new $generator;
+        }
+        return $generators;
     }
 }
