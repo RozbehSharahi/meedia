@@ -3,7 +3,6 @@
 namespace RozbehSharahi\Meedia\Command;
 
 use RozbehSharahi\Meedia\DummyCreator;
-use RozbehSharahi\Meedia\DummyGenerator\ImageDummyGenerator;
 use Ssh\Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

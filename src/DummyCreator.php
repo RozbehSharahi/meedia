@@ -46,9 +46,8 @@ class DummyCreator
     {
         array_map(function ($file) {
             $dummyConfiguration = new DummyConfiguration(
-                $file['width'],
-                $file['height'],
-                $this->destination . '/' . $file['path']
+                $this->destination . '/' . $file['path'],
+                $file
             );
             $dummyGenerator = $this->findDummyGenerator($dummyConfiguration->getType());
 

@@ -27,9 +27,11 @@ class ImageDummyGeneratorTest extends TestCase
         $generator = new ImageDummyGenerator();
 
         $configuration = new DummyConfiguration(
-            '100',
-            '200',
-            vfsStream::url('dir/test-directory/test-file.jpg')
+            vfsStream::url('dir/test-directory/test-file.jpg'),
+            [
+                'width' => '100',
+                'height' => '200',
+            ]
         );
 
         $generator->generate($configuration);

@@ -45,8 +45,8 @@ class ImageDummyGenerator implements DummyGeneratorInterface
     protected function createDummy(DummyConfiguration $dummyConfiguration)
     {
         $dummy = imagecreatetruecolor(
-            $dummyConfiguration->getWidth(),
-            $dummyConfiguration->getHeight()
+            $dummyConfiguration->getAttribute('width'),
+            $dummyConfiguration->getAttribute('height')
         );
         return $dummy;
     }

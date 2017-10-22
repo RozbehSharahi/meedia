@@ -11,27 +11,31 @@ class DummyConfigurationTest extends TestCase
     public function canGetAllInfoByPassingPathToDummyConfiguration()
     {
         $configuration = new DummyConfiguration(
-            100,
-            200,
-            'my-test-directory/my-test-file.jpg'
+            'my-test-directory/my-test-file.jpg',
+            [
+                'width' => 100,
+                'height' => 200
+            ]
         );
 
         self::assertEquals('jpg', $configuration->getType());
         self::assertEquals('jpg', $configuration->getExtension());
         self::assertEquals('my-test-file', $configuration->getFileName());
         self::assertEquals('my-test-directory', $configuration->getDirectory());
-        self::assertEquals('my-test-directory/my-test-file.jpg',$configuration->getFilePath());
-        self::assertEquals('100', $configuration->getWidth());
-        self::assertEquals('200', $configuration->getHeight());
+        self::assertEquals('my-test-directory/my-test-file.jpg', $configuration->getFilePath());
+        self::assertEquals('100', $configuration->getAttribute('width'));
+        self::assertEquals('200', $configuration->getAttribute('height'));
     }
 
     /** @test */
     public function canGetAllInfoByPassingPathWithoutExtensionToDummyConfiguration()
     {
         $configuration = new DummyConfiguration(
-            100,
-            200,
             'my-test-directory/my-test-file',
+            [
+                'width' => 100,
+                'height' => 200
+            ],
             'png'
         );
 
@@ -39,11 +43,10 @@ class DummyConfigurationTest extends TestCase
         self::assertEquals(null, $configuration->getExtension());
         self::assertEquals('my-test-file', $configuration->getFileName());
         self::assertEquals('my-test-directory', $configuration->getDirectory());
-        self::assertEquals('my-test-directory/my-test-file',$configuration->getFilePath());
-        self::assertEquals('100', $configuration->getWidth());
-        self::assertEquals('200', $configuration->getHeight());
+        self::assertEquals('my-test-directory/my-test-file', $configuration->getFilePath());
+        self::assertEquals('100', $configuration->getAttribute('width'));
+        self::assertEquals('200', $configuration->getAttribute('height'));
     }
-
 
 
 }

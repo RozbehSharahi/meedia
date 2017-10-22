@@ -36,27 +36,31 @@ class DummyConfiguration
     protected $height;
 
     /**
+     * @var array
+     */
+    protected $attributes;
+
+    /**
      * DummyConfiguration constructor.
-     * @param int $width
-     * @param int $height
+     *
      * @param string $filePath
+     * @param array $attributes
      * @param string $type
      * @throws \Exception
+     * @internal param int $width
      */
-    public function __construct(int $width, int $height, string $filePath, string $type = null)
+    public function __construct(string $filePath, array $attributes, string $type = null)
     {
         if (!empty($filePath) && !is_string($filePath)) {
             throw new \Exception('File path must be of type string in ' . static::class);
         }
-
-        $this->width = $width;
-        $this->height = $height;
 
         $pathInfo = pathinfo($filePath);
         $this->directory = $pathInfo['dirname'];
         $this->fileName = $pathInfo['filename'];
         $this->extension = $pathInfo['extension'] ?? null;
         $this->type = $type ?: $this->extension;
+        $this->attributes = $attributes;
     }
 
     /**
@@ -132,29 +136,12 @@ class DummyConfiguration
     }
 
     /**
-     * @return int
+     * @param string $attribute
+     * @return mixed
      */
-    public function getWidth()
+    public function getAttribute(string $attribute)
     {
-        return $this->width;
-    }
-
-    /**
-     * @param int $width
-     * @return DummyConfiguration
-     */
-    public function setWidth($width)
-    {
-        $this->width = $width;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHeight()
-    {
-        return $this->height;
+        return $this->attributes[$attribute];
     }
 
     /**
