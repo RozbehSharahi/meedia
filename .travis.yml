@@ -1,0 +1,13 @@
+language: php
+php:
+  - '7.0'
+  - '7.1'
+  - hhvm
+  - nightly
+
+before_script:
+  - sudo apt-get install -y -qq libssh2-1-dev libssh2-php
+  - sudo phpenmod ssh2
+  - composer self-update
+  - composer install
+script: vendor/bin/phpunit

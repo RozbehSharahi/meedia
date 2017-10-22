@@ -67,3 +67,8 @@ fabric.properties
 
 # End of https://www.gitignore.io/api/phpstorm
 /vendor/
+
+/meedia-sync
+/meedia-secret.json
+/meedia-lock.json
+/meedia.json

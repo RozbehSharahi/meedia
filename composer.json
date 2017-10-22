@@ -9,5 +9,22 @@
             "email": "rozbeh.sharahi@turbinekreuzberg.com"
         }
     ],
-    "require": {}
+    "require": {
+        "symfony/console": "^3.3",
+        "herzult/php-ssh": "^1.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4",
+        "mikey179/vfsStream": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "RozbehSharahi\\Meedia\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RozbehSharahi\\Meedia\\Tests\\": "tests/"
+        }
+    }
 }
