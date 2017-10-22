@@ -1,7 +1,12 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+// Include composer autoload
+foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+    if (file_exists($file)) {
+        require $file;
+    }
+}
 
 use RozbehSharahi\Meedia\Command\InitializationCommand;
 use RozbehSharahi\Meedia\Command\SyncCommand;
