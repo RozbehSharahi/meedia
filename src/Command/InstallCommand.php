@@ -7,7 +7,7 @@ use Ssh\Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SyncCommand extends AbstractCommand
+class InstallCommand extends AbstractCommand
 {
 
     /**
@@ -16,8 +16,8 @@ class SyncCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setName('meedia:sync')
-            ->setDescription('Sync files from live to local');
+            ->setName('meedia:install')
+            ->setDescription('Install files either by lock or by live sync');
     }
 
     /**
