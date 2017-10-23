@@ -24,7 +24,7 @@ class InitializationCommand extends AbstractCommand
             ->addArgument('user', InputArgument::OPTIONAL, 'Username to connect')
             ->addArgument('source', InputArgument::OPTIONAL, 'Source of media')
             ->addArgument('destination', InputArgument::OPTIONAL, 'Destination for dummies')
-            ->addOption('password', 'password', InputOption::VALUE_OPTIONAL, 'Password (optional)');
+            ->addOption('password', 'p', InputOption::VALUE_OPTIONAL, 'Password (optional)');
     }
 
     /**

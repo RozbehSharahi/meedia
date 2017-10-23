@@ -17,7 +17,8 @@ class InstallCommand extends AbstractCommand
     {
         $this
             ->setName('meedia:install')
-            ->setDescription('Install files either by lock or by live sync');
+            ->setDescription('Install files either by lock or by live sync')
+            ->addOption('update', 'u', null, 'Will recreate tree by syncing from live');
     }
 
     /**
@@ -38,17 +39,16 @@ class InstallCommand extends AbstractCommand
 
         $this->assertConfiguration($configuration);
 
-        $ssh = $this->getSsh($configuration);
-
-        $output->writeln('Check if live dependencies (f.i. ImageMagick)...');
-
-        $this->assertLive($ssh);
-
         $output->writeln('Get file tree...');
 
-        if ($treeLock = $this->getTreeLock()) {
+        if (!$input->getOption('update') && $treeLock = $this->getTreeLock()) {
             $tree = $treeLock;
         } else {
+            $ssh = $this->getSsh($configuration);
+
+            $output->writeln('Check live dependencies (f.i. ImageMagick)...');
+            $this->assertLive($ssh);
+
             $tree = $this->getTree($ssh, $configuration->source);
             $output->writeln('Create lock file...');
             $this->createLock($tree);
