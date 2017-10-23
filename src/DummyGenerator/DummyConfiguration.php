@@ -26,16 +26,6 @@ class DummyConfiguration
     protected $type;
 
     /**
-     * @var int
-     */
-    protected $width;
-
-    /**
-     * @var int
-     */
-    protected $height;
-
-    /**
      * @var array
      */
     protected $attributes;
