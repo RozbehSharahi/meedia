@@ -11,7 +11,7 @@ class ImageDummyGenerator implements DummyGeneratorInterface
      */
     public function generate(DummyConfiguration $configuration)
     {
-        if (!static::supportsFileType($configuration->getType())) {
+        if (!$this->supportsFileType($configuration->getType())) {
             throw new \Exception(static::class . ' does not support image generation for ' . $configuration->getType());
         }
 
