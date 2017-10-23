@@ -1,0 +1,7 @@
+sshd:
+    build: test-server
+    volumes:
+        - ./tests/Fixtures/TestServer:/home/testuser/test-server
+    ports:
+        - "2222:22"
+    command: testuser:testpass:1001:1001
