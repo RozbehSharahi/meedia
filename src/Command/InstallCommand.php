@@ -49,7 +49,7 @@ class InstallCommand extends AbstractCommand
             $output->writeln('Check live dependencies (f.i. ImageMagick)...');
             $this->assertLive($ssh);
 
-            $tree = $this->getTree($ssh, $configuration->source);
+            $tree = $this->getTree($ssh, $configuration);
             $output->writeln('Create lock file...');
             $this->createLock($tree);
         }
@@ -95,35 +95,11 @@ class InstallCommand extends AbstractCommand
 
     /**
      * @param Session $ssh
-     * @param string $source
-     * @return array
+     * @param \stdClass $configuration
      */
-    protected function getTree(Session $ssh, $source)
+    protected function getTree(Session $ssh, $configuration)
     {
-        $fileDescriptions = str_replace('||||' . PHP_EOL, '||||', trim($ssh->getExec()
-            ->run('cd ' . $source . ' && find . -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \) -exec identify -format "%w||||%h||||" {} \; -exec echo {} \;')));
 
-        return array_map(function ($fileDescription) {
-            $info = explode('||||', $fileDescription);
-
-            $width = $info[0];
-            $height = $info[1];
-
-            // gifs will return for every frame width, and height, therefor we have to take the last part of the array
-            // to get the path
-            $path = $info[count($info) - 1];
-
-            // Assert correct format
-            if (empty($width) || empty($height) || empty($path)) {
-                throw new \Exception('File description: ' . $fileDescription . ' could not be interpreted.');
-            }
-
-            return [
-                'width' => $width,
-                'height' => $height,
-                'path' => $path
-            ];
-        }, explode(PHP_EOL, $fileDescriptions));
     }
 
     /**
