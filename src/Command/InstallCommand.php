@@ -92,6 +92,10 @@ class InstallCommand extends AbstractCommand
         if (empty($configuration->generators)) {
             throw new \Exception('meedia.json:generators must not be empty');
         }
+
+        if (empty($configuration->treeBuilders)) {
+            throw new \Exception('meedia.json:treeBuilders must not be empty');
+        }
     }
 
     /**
