@@ -3,6 +3,7 @@
 namespace RozbehSharahi\Meedia\Command;
 
 use RozbehSharahi\Meedia\DummyCreator;
+use RozbehSharahi\Meedia\TreeCreator;
 use Ssh\Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -96,10 +97,15 @@ class InstallCommand extends AbstractCommand
     /**
      * @param Session $ssh
      * @param \stdClass $configuration
+     * @return array
      */
     protected function getTree(Session $ssh, $configuration)
     {
+        $treeCreator = new TreeCreator(array_map(function (string $treeBuilderClass) use ($ssh, $configuration) {
+            return new $treeBuilderClass($configuration->source, $ssh);
+        }, $configuration->treeBuilders));
 
+        return $treeCreator->create();
     }
 
     /**
