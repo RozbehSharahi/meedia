@@ -47,7 +47,7 @@ class InstallCommand extends AbstractCommand
     {
         $options = $input->getOptions();
 
-        if (!is_file($input->getOption('meedia-file'))) {
+        if (!is_file($options['meedia-file'])) {
             throw new \Exception('Meedia is not yet configured. Please use meedia:init');
         }
 
