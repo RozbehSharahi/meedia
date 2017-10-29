@@ -35,15 +35,15 @@ abstract class AbstractCommand extends Command
     {
         $configuration = json_decode(file_get_contents($configFile));
 
-        if($configuration['secretFile']) {
-            $secretConfigFile = $configuration['secretFile'];
+        if(!empty($configuration->secretFile)) {
+            $secretConfigFile = $configuration->secretFile;
         }
 
         // add secrets
         if (file_exists($secretConfigFile)) {
             $configuration = (object)array_replace_recursive(
                 (array)$configuration,
-                (array)json_decode(file_get_contents('meedia-secret.json'))
+                (array)json_decode(file_get_contents($secretConfigFile))
             );
         }
 
