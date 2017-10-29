@@ -34,19 +34,13 @@ Initialize your ssh connection to live
 
 `php vendor/rozbehsharahi/meedia/meedia.php meedia:init` 
 
----
-
 Test configured connection
 
 `php vendor/rozbehsharahi/meedia/meedia.php meedia:test-connection` 
 
----
-
 Install media files either by lock or sync.
 
 `php vendor/rozbehsharahi/meedia/meedia.php meedia:install` 
-
----
 
 Update media files by syncing from live.
 
