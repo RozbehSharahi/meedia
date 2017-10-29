@@ -55,7 +55,21 @@ class InstallCommand extends AbstractCommand
 
         $output->writeln('Check configuration file...');
 
-        $this->assertConfiguration($configuration);
+        if (empty($configuration->source)) {
+            throw new \Exception('meedia-file:source must not be empty');
+        }
+
+        if (empty($configuration->destination)) {
+            throw new \Exception('meedia-file:destination must not be empty');
+        }
+
+        if (empty($configuration->generators)) {
+            throw new \Exception('meedia-file:generators must not be empty');
+        }
+
+        if (empty($configuration->treeBuilders)) {
+            throw new \Exception('meedia-file:treeBuilders must not be empty');
+        }
 
         $output->writeln('Get file tree...');
 
@@ -89,29 +103,6 @@ class InstallCommand extends AbstractCommand
     {
         if (!strpos($ssh->getExec()->run('convert -version'), 'ImageMagick') !== false) {
             throw new \Exception('convert command is not available on live. Meedia could not sync media');
-        }
-    }
-
-    /**
-     * @param $configuration
-     * @throws \Exception
-     */
-    protected function assertConfiguration($configuration)
-    {
-        if (empty($configuration->source)) {
-            throw new \Exception('meedia-file:source must not be empty');
-        }
-
-        if (empty($configuration->destination)) {
-            throw new \Exception('meedia-file:destination must not be empty');
-        }
-
-        if (empty($configuration->generators)) {
-            throw new \Exception('meedia-file:generators must not be empty');
-        }
-
-        if (empty($configuration->treeBuilders)) {
-            throw new \Exception('meedia-file:treeBuilders must not be empty');
         }
     }
 

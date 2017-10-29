@@ -28,14 +28,19 @@ abstract class AbstractCommand extends Command
      * Will merge meedia-secret.json if there.
      *
      * @param string $configFile
+     * @param string $secretConfigFile
      * @return \stdClass
      */
-    protected function getConfiguration(string $configFile)
+    protected function getConfiguration(string $configFile, string $secretConfigFile='meedia-secret.json')
     {
         $configuration = json_decode(file_get_contents($configFile));
 
+        if($configuration['secretFile']) {
+            $secretConfigFile = $configuration['secretFile'];
+        }
+
         // add secrets
-        if (file_exists('meedia-secret.json')) {
+        if (file_exists($secretConfigFile)) {
             $configuration = (object)array_replace_recursive(
                 (array)$configuration,
                 (array)json_decode(file_get_contents('meedia-secret.json'))
