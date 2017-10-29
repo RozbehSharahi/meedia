@@ -45,11 +45,13 @@ class InstallCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $options = $input->getOptions();
+
         if (!is_file($input->getOption('meedia-file'))) {
             throw new \Exception('Meedia is not yet configured. Please use meedia:init');
         }
 
-        $configuration = $this->getConfiguration($input->getOption('meedia-file'));
+        $configuration = $this->getConfiguration($options['meedia-file']);
 
         $output->writeln('Check configuration file...');
 
@@ -57,7 +59,7 @@ class InstallCommand extends AbstractCommand
 
         $output->writeln('Get file tree...');
 
-        if (!$input->getOption('update') && $treeLock = $this->getTreeLock($input->getOption('meedia-lock-file'))) {
+        if (!$options['update'] && $treeLock = $this->getTreeLock($options['meedia-lock-file'])) {
             $tree = $treeLock;
         } else {
             $ssh = $this->getSsh($configuration);
@@ -67,7 +69,7 @@ class InstallCommand extends AbstractCommand
 
             $tree = $this->getTree($ssh, $configuration);
             $output->writeln('Create lock file...');
-            $this->createLock($tree, $input->getOption('meedia-lock-file'));
+            $this->createLock($tree, $options['meedia-lock-file']);
         }
 
         $output->writeln('Create dummy files...');
