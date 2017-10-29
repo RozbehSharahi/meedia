@@ -4,7 +4,6 @@ namespace RozbehSharahi\Meedia\Command;
 
 use RozbehSharahi\Meedia\DummyGenerator\ImageDummyGenerator;
 use RozbehSharahi\Meedia\TreeBuilder\ImageTreeBuilder;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -21,11 +20,62 @@ class InitializationCommand extends AbstractCommand
         $this
             ->setName('meedia:init')
             ->setDescription('Create configuration file for project')
-            ->addArgument('host', InputArgument::OPTIONAL, 'Host of live website')
-            ->addArgument('user', InputArgument::OPTIONAL, 'Username to connect')
-            ->addArgument('source', InputArgument::OPTIONAL, 'Source of media')
-            ->addArgument('destination', InputArgument::OPTIONAL, 'Destination for dummies')
-            ->addOption('password', 'p', InputOption::VALUE_OPTIONAL, 'Password (optional)');
+            ->addOption(
+                'host',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Host of live website',
+                null
+            )
+            ->addOption(
+                'user',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Username to connect',
+                null
+            )
+            ->addOption(
+                'port',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Port',
+                22
+            )
+            ->addOption(
+                'source',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Source of media',
+                null
+            )
+            ->addOption(
+                'destination',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Destination for dummies',
+                null
+            )
+            ->addOption(
+                'password',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Password (optional)',
+                null
+            )
+            ->addOption(
+                'meedia-file',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'Config file (default: meedia.json)',
+                'meedia.json'
+            )
+            ->addOption(
+                'meedia-secret-file',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Meedia secret config file (default: meedia-secret.json)',
+                'meedia-secret.json'
+            );
     }
 
     /**
@@ -35,19 +85,18 @@ class InitializationCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $arguments = $input->getArguments();
         $options = $input->getOptions();
 
-        if (empty($arguments['host'])) {
-            $arguments['host'] = $this->getQuestionHelper()->ask(
+        if (empty($options['host'])) {
+            $options['host'] = $this->getQuestionHelper()->ask(
                 $input,
                 $output,
                 new Question('SSH host name: ')
             );
         }
 
-        if (empty($arguments['user'])) {
-            $arguments['user'] = $this->getQuestionHelper()->ask(
+        if (empty($options['user'])) {
+            $options['user'] = $this->getQuestionHelper()->ask(
                 $input,
                 $output,
                 new Question('SSH user: ')
@@ -62,27 +111,28 @@ class InitializationCommand extends AbstractCommand
             );
         }
 
-        if (empty($arguments['source'])) {
-            $arguments['source'] = $this->getQuestionHelper()->ask(
+        if (empty($options['source'])) {
+            $options['source'] = $this->getQuestionHelper()->ask(
                 $input,
                 $output,
                 new Question('Where shall meedia get your media (default: /var/www/html/img/): ', '/var/www/html/img/')
             );
         }
 
-        if (empty($arguments['destination'])) {
-            $arguments['destination'] = $this->getQuestionHelper()->ask(
+        if (empty($options['destination'])) {
+            $options['destination'] = $this->getQuestionHelper()->ask(
                 $input,
                 $output,
                 new Question('Where shall meedia put your dummies (default: meedia-sync/): ', 'meedia-sync/')
             );
         }
 
-        file_put_contents('meedia.json', json_encode([
-            'host' => $arguments['host'],
-            'user' => $arguments['user'],
-            'source' => $arguments['source'],
-            'destination' => $arguments['destination'],
+        file_put_contents($options['meedia-file'], json_encode([
+            'host' => $options['host'],
+            'user' => $options['user'],
+            'source' => $options['source'],
+            'destination' => $options['destination'],
+            'port' => (int)$options['port'],
             'generators' => [
                 ImageDummyGenerator::class
             ],
@@ -92,11 +142,11 @@ class InitializationCommand extends AbstractCommand
         ], JSON_PRETTY_PRINT));
 
         if (!empty($options['password'])) {
-            file_put_contents('meedia-secret.json', json_encode([
+            file_put_contents($options['meedia-secret-file'], json_encode([
                 'password' => $options['password']
             ], JSON_PRETTY_PRINT));
         }
 
-        $output->writeln('meedia.json file was generated');
+        $output->writeln($input->getOption('meedia-file') . ' file generated successfully');
     }
 }

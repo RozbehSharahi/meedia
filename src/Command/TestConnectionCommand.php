@@ -3,6 +3,7 @@
 namespace RozbehSharahi\Meedia\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class TestConnectionCommand extends AbstractCommand
@@ -15,7 +16,14 @@ class TestConnectionCommand extends AbstractCommand
     {
         $this
             ->setName('meedia:test-connection')
-            ->setDescription('Test configured connection');
+            ->setDescription('Test configured connection')
+            ->addOption(
+                'meedia-file',
+                'c',
+                InputOption::VALUE_OPTIONAL,
+                'Meedia config file (default meedia.json)',
+                'meedia.json'
+            );
     }
 
     /**
@@ -26,11 +34,13 @@ class TestConnectionCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!is_file('meedia.json')) {
+        $options = $input->getOptions();
+
+        if (!is_file($options['meedia-file'])) {
             throw new \Exception('Meedia is not yet configured. Please use meedia:init');
         }
 
-        $configuration = $this->getConfiguration();
+        $configuration = $this->getConfiguration($options['meedia-file']);
 
         if (empty($configuration->host)) {
             throw new \Exception('Host not found in meedia.json');
