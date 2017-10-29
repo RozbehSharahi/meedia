@@ -3,8 +3,8 @@
 namespace RozbehSharahi\Meedia\Command;
 
 use RozbehSharahi\Meedia\DummyCreator;
+use RozbehSharahi\Meedia\TreeBuilder\LockTreeBuilder;
 use RozbehSharahi\Meedia\TreeCreator;
-use Ssh\Session;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,7 +32,7 @@ class InstallCommand extends AbstractCommand
                 'l',
                 InputOption::VALUE_OPTIONAL,
                 'Meedia lock config file (default meedia-lock.json)',
-                'meedia-lock.json'
+                null
             )
             ->addOption('update', 'u', null, 'Will recreate tree by syncing from live');
     }
@@ -71,19 +71,18 @@ class InstallCommand extends AbstractCommand
             throw new \Exception('meedia-file:treeBuilders must not be empty');
         }
 
-        $output->writeln('Get file tree...');
+        // Set lock file either by option or configuration
+        $configuration->lockFile = $options['meedia-lock-file'] ?? $configuration->lockFile ?? 'meedia-lock.json';
 
-        if (!$options['update'] && $treeLock = $this->getTreeLock($options['meedia-lock-file'])) {
-            $tree = $treeLock;
+        if (file_exists($configuration->lockFile) && $options['update'] === false) {
+            $output->writeln('Get file tree from lock file...');
+            $treeCreator = new TreeCreator([new LockTreeBuilder($configuration)]);
+            $tree = $treeCreator->create();
         } else {
-            $ssh = $this->getSsh($configuration);
-
-            $output->writeln('Check live dependencies (f.i. ImageMagick)...');
-            $this->assertLive($ssh);
-
-            $tree = $this->getTree($ssh, $configuration);
-            $output->writeln('Create lock file...');
-            $this->createLock($tree, $options['meedia-lock-file']);
+            $output->writeln('Get file tree from live...');
+            $treeCreator = new TreeCreator($this->getTreeBuilders($configuration));
+            $tree = $treeCreator->create();
+            $this->createLock($tree, $configuration->lockFile);
         }
 
         $output->writeln('Create dummy files...');
@@ -96,49 +95,12 @@ class InstallCommand extends AbstractCommand
     }
 
     /**
-     * @param Session $ssh
-     * @throws \Exception
-     */
-    protected function assertLive(Session $ssh)
-    {
-        if (!strpos($ssh->getExec()->run('convert -version'), 'ImageMagick') !== false) {
-            throw new \Exception('convert command is not available on live. Meedia could not sync media');
-        }
-    }
-
-    /**
-     * @param Session $ssh
-     * @param \stdClass $configuration
-     * @return array
-     */
-    protected function getTree(Session $ssh, $configuration)
-    {
-        $treeCreator = new TreeCreator(array_map(function (string $treeBuilderClass) use ($ssh, $configuration) {
-            return new $treeBuilderClass($configuration->source, $ssh);
-        }, $configuration->treeBuilders));
-
-        return $treeCreator->create();
-    }
-
-    /**
      * @param $tree
      * @param string $lockFile
      */
-    protected function createLock($tree, string $lockFile)
+    protected function createLock(array $tree, string $lockFile)
     {
         file_put_contents($lockFile, json_encode($tree, JSON_PRETTY_PRINT));
-    }
-
-    /**
-     * @param string $lockFile
-     * @return array|null
-     */
-    protected function getTreeLock(string $lockFile)
-    {
-        if (file_exists($lockFile)) {
-            return json_decode(file_get_contents($lockFile), true);
-        }
-        return null;
     }
 
     /**
@@ -154,5 +116,16 @@ class InstallCommand extends AbstractCommand
             $generators[] = new $generator;
         }
         return $generators;
+    }
+
+    /**
+     * @param $configuration
+     * @return array
+     */
+    protected function getTreeBuilders($configuration): array
+    {
+        return array_map(function ($treeBuilderClass) use ($configuration) {
+            return new $treeBuilderClass($configuration);
+        }, $configuration->treeBuilders);
     }
 }

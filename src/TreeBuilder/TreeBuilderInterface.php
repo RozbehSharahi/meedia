@@ -10,10 +10,9 @@ interface TreeBuilderInterface
     /**
      * TreeBuilderInterface constructor.
      *
-     * @param string $path
-     * @param Session $ssh
+     * @param \stdClass $configuration
      */
-    public function __construct(string $path, Session $ssh);
+    public function __construct(\stdClass $configuration);
 
     /**
      * @return array

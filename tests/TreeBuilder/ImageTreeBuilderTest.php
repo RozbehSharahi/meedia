@@ -4,11 +4,8 @@ namespace RozbehSharahi\Meedia\Tests\TreeBuilder;
 
 use PHPUnit\Framework\TestCase;
 use RozbehSharahi\Meedia\TreeBuilder\ImageTreeBuilder;
-use Ssh\Authentication\Password;
-use Ssh\Configuration;
-use Ssh\Session;
 
-class TreeBuilderTest extends TestCase
+class ImageTreeBuilderTest extends TestCase
 {
     protected $testUser = 'testuser';
     protected $testPass = 'testpass';
@@ -16,25 +13,15 @@ class TreeBuilderTest extends TestCase
     protected $testHost = 'localhost';
 
     /** @test */
-    public function canConnectToTestServer()
-    {
-        $ssh = new Session(
-            new Configuration($this->testHost, $this->testPort),
-            new Password($this->testUser, $this->testPass)
-        );
-
-        self::assertEquals('/home/testuser', trim($ssh->getExec()->run('pwd')));
-    }
-
-    /** @test */
     public function canCreateTree()
     {
-        $ssh = new Session(
-            new Configuration($this->testHost, $this->testPort),
-            new Password($this->testUser, $this->testPass)
-        );
-
-        $treeBuilder = new ImageTreeBuilder('/home/' . $this->testUser . '/test-server/', $ssh);
+        $treeBuilder = new ImageTreeBuilder((object) [
+            'host' => $this->testHost,
+            'port' => $this->testPort,
+            'user' => $this->testUser,
+            'password' => $this->testPass,
+            'source' => '~/test-server/'
+        ]);
 
         $tree = $treeBuilder->getTree();
 

@@ -21,10 +21,15 @@ class TreeCreatorTest extends TestCase
     /** @test */
     public function canCreateTreeWithTreeCreator()
     {
-        $ssh = new Session(new Configuration('localhost', 2222), new Password('testuser', 'testpass'));
         $treeCreator = new TreeCreator(
             [
-                new ImageTreeBuilder('~/test-server/', $ssh)
+                new ImageTreeBuilder((object)[
+                    'host' => 'localhost',
+                    'port' => 2222,
+                    'user' => 'testuser',
+                    'password' => 'testpass',
+                    'source' => '~/test-server/'
+                ])
             ]
         );
 
@@ -66,10 +71,15 @@ class TreeCreatorTest extends TestCase
     /** @test */
     public function canInformIfAnyTreeBuilderSupportsFileType()
     {
-        $ssh = new Session(new Configuration('localhost', 2222), new Password('testuser', 'testpass'));
         $treeCreator = new TreeCreator(
             [
-                new ImageTreeBuilder('~/test-server/', $ssh)
+                new ImageTreeBuilder((object) [
+                    'host' => 'localhost',
+                    'port' => 2222,
+                    'user' => 'testuser',
+                    'password' => 'testpass',
+                    'source' => '~/test-server/'
+                ])
             ]
         );
 

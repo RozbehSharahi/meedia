@@ -2,6 +2,9 @@
 
 namespace RozbehSharahi\Meedia\TreeBuilder;
 
+use Ssh\Authentication\Agent;
+use Ssh\Authentication\Password;
+use Ssh\Configuration;
 use Ssh\Session;
 
 class ImageTreeBuilder implements TreeBuilderInterface
@@ -10,7 +13,7 @@ class ImageTreeBuilder implements TreeBuilderInterface
     /**
      * @var string
      */
-    protected $path;
+    protected $source;
 
     /**
      * @var Session
@@ -18,15 +21,20 @@ class ImageTreeBuilder implements TreeBuilderInterface
     protected $ssh;
 
     /**
+     * @var \stdClass
+     */
+    protected $configuration;
+
+    /**
      * TreeBuilderInterface constructor.
      *
-     * @param string $path
-     * @param Session $ssh
+     * @param \stdClass $configuration
      */
-    public function __construct(string $path, Session $ssh)
+    public function __construct(\stdClass $configuration)
     {
-        $this->path = $path;
-        $this->ssh = $ssh;
+        $this->configuration = $configuration;
+        $this->source = $configuration->source;
+        $this->ssh = $this->getSsh();
     }
 
     /**
@@ -35,7 +43,7 @@ class ImageTreeBuilder implements TreeBuilderInterface
     public function getTree()
     {
         $fileDescriptions = str_replace('||||' . PHP_EOL, '||||', trim($this->ssh->getExec()
-            ->run('cd ' . $this->path . ' && find . -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \) -exec identify -format "%w||||%h||||" {} \; -exec echo {} \;')));
+            ->run('cd ' . $this->source . ' && find . -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \) -exec identify -format "%w||||%h||||" {} \; -exec echo {} \;')));
 
         return array_map(function ($fileDescription) {
             $info = explode('||||', $fileDescription);
@@ -66,5 +74,32 @@ class ImageTreeBuilder implements TreeBuilderInterface
     public function supportsFileType($type)
     {
         return in_array($type, ['gif', 'png', 'jpg']);
+    }
+
+    /**
+     * @return Session
+     */
+    protected function getSsh()
+    {
+        return new Session(
+            new Configuration($this->configuration->host, $this->configuration->port ?? 22),
+            $this->getAuthentication()
+        );
+    }
+
+    /**
+     * Get authentication
+     *
+     * Will get the right form of authentication by configuration
+     *
+     * @return Agent|Password
+     */
+    protected function getAuthentication()
+    {
+        if (!empty($this->configuration->password)) {
+            return new Password($this->configuration->user, $this->configuration->password);
+        }
+
+        return new Agent($this->configuration->user);
     }
 }
