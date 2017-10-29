@@ -6,9 +6,11 @@
   "source": "~\/test-server\/",
   "destination": "vfs:\/\/dir\/test-data\/",
   "generators": [
-    "RozbehSharahi\\Meedia\\DummyGenerator\\ImageDummyGenerator"
+    "RozbehSharahi\\Meedia\\DummyGenerator\\ImageDummyGenerator",
+    "RozbehSharahi\\Meedia\\DummyGenerator\\TextFileDummyGenerator"
   ],
   "treeBuilders": [
-    "RozbehSharahi\\Meedia\\TreeBuilder\\ImageTreeBuilder"
+    "RozbehSharahi\\Meedia\\TreeBuilder\\ImageTreeBuilder",
+    "RozbehSharahi\\Meedia\\TreeBuilder\\TextFileTreeBuilder"
   ]
 }

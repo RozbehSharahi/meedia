@@ -4,10 +4,8 @@ namespace RozbehSharahi\Meedia\Tests;
 
 use PHPUnit\Framework\TestCase;
 use RozbehSharahi\Meedia\TreeBuilder\ImageTreeBuilder;
+use RozbehSharahi\Meedia\TreeBuilder\TextFileTreeBuilder;
 use RozbehSharahi\Meedia\TreeCreator;
-use Ssh\Authentication\Password;
-use Ssh\Configuration;
-use Ssh\Session;
 
 class TreeCreatorTest extends TestCase
 {
@@ -29,6 +27,13 @@ class TreeCreatorTest extends TestCase
                     'user' => 'testuser',
                     'password' => 'testpass',
                     'source' => '~/test-server/'
+                ]),
+                new TextFileTreeBuilder((object)[
+                    'host' => 'localhost',
+                    'port' => 2222,
+                    'user' => 'testuser',
+                    'password' => 'testpass',
+                    'source' => '~/test-server/'
                 ])
             ]
         );
@@ -40,6 +45,9 @@ class TreeCreatorTest extends TestCase
         });
 
         self::assertEquals([
+            [
+                'path' => './some-file-1.txt',
+            ],
             [
                 'path' => './some-pic-1.png',
                 'width' => "380",
