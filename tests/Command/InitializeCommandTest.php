@@ -6,7 +6,9 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use RozbehSharahi\Meedia\Command\InitializationCommand;
 use RozbehSharahi\Meedia\DummyGenerator\ImageDummyGenerator;
+use RozbehSharahi\Meedia\DummyGenerator\TextFileDummyGenerator;
 use RozbehSharahi\Meedia\TreeBuilder\ImageTreeBuilder;
+use RozbehSharahi\Meedia\TreeBuilder\TextFileTreeBuilder;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -42,9 +44,11 @@ class InitializeCommandTest extends TestCase
             'destination' => 'vfs://dir/test-destination',
             'generators' => [
                 ImageDummyGenerator::class,
+                TextFileDummyGenerator::class
             ],
             'treeBuilders' => [
                 ImageTreeBuilder::class,
+                TextFileTreeBuilder::class
             ]
         ], json_decode(file_get_contents('vfs://dir/meedia-test-configuration.json'), true));
 
