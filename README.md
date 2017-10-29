@@ -2,7 +2,7 @@
 
 A tool for creating dummy media files based on live environments.
 
-<img src="https://travis-ci.org/RozbehSharahi/meedia.svg?branch=master" />
+[![Build Status](https://travis-ci.org/RozbehSharahi/meedia.svg?branch=master)](https://travis-ci.org/RozbehSharahi/meedia)
 
 ## Introduction
 
