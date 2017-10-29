@@ -19,8 +19,6 @@ The tool contains an `meedia:install` and `meedia:update` command, which
 This project is still in progress and experimental. In the future following features
  shall be added:
  
-- Abstraction of tree builder using interface to be able to create project specific
- lookup scripts.
 - Add default video dummy generator
 - Implement fast mode for syncing only files that have changed.
 
