@@ -29,9 +29,22 @@ class ImageTreeBuilder implements TreeBuilderInterface
      * TreeBuilderInterface constructor.
      *
      * @param \stdClass $configuration
+     * @throws \Exception
      */
     public function __construct(\stdClass $configuration)
     {
+        if (empty($configuration->source)) {
+            throw new \Exception('Configuration misses a source property for ' . static::class);
+        }
+
+        if (empty($configuration->host)) {
+            throw new \Exception('Configuration misses a host property for ' . static::class);
+        }
+
+        if (empty($configuration->port)) {
+            throw new \Exception('Configuration misses a port property for ' . static::class);
+        }
+
         $this->configuration = $configuration;
         $this->source = $configuration->source;
         $this->ssh = $this->getSsh();

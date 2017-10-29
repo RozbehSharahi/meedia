@@ -3,7 +3,9 @@
 namespace RozbehSharahi\Meedia\Command;
 
 use RozbehSharahi\Meedia\DummyGenerator\ImageDummyGenerator;
+use RozbehSharahi\Meedia\DummyGenerator\TextFileDummyGenerator;
 use RozbehSharahi\Meedia\TreeBuilder\ImageTreeBuilder;
+use RozbehSharahi\Meedia\TreeBuilder\TextFileTreeBuilder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -134,10 +136,12 @@ class InitializationCommand extends AbstractCommand
             'destination' => $options['destination'],
             'port' => (int)$options['port'],
             'generators' => [
-                ImageDummyGenerator::class
+                ImageDummyGenerator::class,
+                TextFileDummyGenerator::class,
             ],
             'treeBuilders' => [
-                ImageTreeBuilder::class
+                ImageTreeBuilder::class,
+                TextFileTreeBuilder::class
             ]
         ], JSON_PRETTY_PRINT));
 
