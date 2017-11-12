@@ -49,6 +49,12 @@ class DummyCreator
                 $this->destination . '/' . $file['path'],
                 $file
             );
+
+            // Don't override existing files
+            if(file_exists($dummyConfiguration->getFilePath())) {
+                return;
+            }
+
             $dummyGenerator = $this->findDummyGenerator($dummyConfiguration->getType());
 
             // assertion
