@@ -13,4 +13,17 @@ RUN echo "deb http://deb.debian.org/debian stretch main" > /etc/apt/sources.list
     vim \
     wget \
     unzip \
-    git
+    git \
+    g++ \
+    gcc \
+    make
+
+# Install dependencies + gm sources
+RUN wget http://ftp.icm.edu.pl/pub/unix/graphics/GraphicsMagick/1.3/GraphicsMagick-1.3.25.tar.gz
+
+# Unzip + compile
+RUN tar zxvf GraphicsMagick-1.3.25.tar.gz
+RUN cd GraphicsMagick-1.3.25 && ./configure && make && make install
+
+# Cleanup
+RUN rm -rf GraphicsMagick-*

@@ -55,8 +55,16 @@ class ImageTreeBuilder implements TreeBuilderInterface
      */
     public function getTree()
     {
-        $fileDescriptions = str_replace('||||' . PHP_EOL, '||||', trim($this->ssh->getExec()
-            ->run('cd ' . $this->source . ' && find . -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \) -exec identify -format "%w||||%h||||" {} \; -exec echo {} \;')));
+        // The command to get file sizes
+        $commandOutput = $this->ssh
+            ->getExec()
+            ->run(
+                'cd ' . $this->source . ' && ' .
+                'find . -type f \( -name "*.png" -o -name "*.gif" -o -name "*.jpg" \)'.
+                ' -exec ' . $this->getIdentifyCommand() . ' -format "%w||||%h||||" {} \; -exec echo {} \;');
+
+        // Prepare output since there might be unwanted line breaks
+        $fileDescriptions = str_replace('||||' . PHP_EOL, '||||', trim($commandOutput));
 
         return array_map(function ($fileDescription) {
             $info = explode('||||', $fileDescription);
@@ -114,5 +122,13 @@ class ImageTreeBuilder implements TreeBuilderInterface
         }
 
         return new Agent($this->configuration->user);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getIdentifyCommand()
+    {
+        return empty($this->configuration->useGraphicsMagick) ? 'identify' : 'gm identify';
     }
 }

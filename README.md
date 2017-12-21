@@ -44,6 +44,20 @@ Update media files by syncing from live.
 
 `php vendor/rozbehsharahi/meedia/meedia.php meedia:update` 
 
+## Fetch image sizes with ImageMagick/GraphicsMagick
+
+On default meedia fetches image sizes through `ImageTreeBuilder` by ImageMagick's `identify` command. In case
+ the live servers has GraphicsMagick installed, you can set `useGraphicsMagick` property
+ on your configuration to use `gm identify` instead.
+ 
+```json
+{
+  // ...
+  "useGraphicsMagick": true
+  // ...
+}
+```
+
 ## Requirements
 
 - PHP 7.1 (cli) on local environment

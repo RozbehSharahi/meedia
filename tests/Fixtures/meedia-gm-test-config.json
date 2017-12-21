@@ -1,0 +1,17 @@
+{
+  "host": "localhost",
+  "port": 2222,
+  "user": "testuser",
+  "password": "testpass",
+  "source": "~\/test-server\/",
+  "destination": "vfs:\/\/dir\/test-data\/",
+  "useGraphicsMagick": true,
+  "generators": [
+    "RozbehSharahi\\Meedia\\DummyGenerator\\ImageDummyGenerator",
+    "RozbehSharahi\\Meedia\\DummyGenerator\\TextFileDummyGenerator"
+  ],
+  "treeBuilders": [
+    "RozbehSharahi\\Meedia\\TreeBuilder\\ImageTreeBuilder",
+    "RozbehSharahi\\Meedia\\TreeBuilder\\TextFileTreeBuilder"
+  ]
+}

@@ -14,9 +14,10 @@ class UpdateCommandTest extends TestCase
 {
     protected $meediaTestFilePath = __DIR__ . '/../Fixtures/meedia-test-config.json';
     protected $meediaTestLockFilePath = 'vfs://dir/does-definitely-not-exist';
+    protected $meediaGraphicsMagickTestFilePath = __DIR__ . '/../Fixtures/meedia-gm-test-config.json';
 
     /** @test */
-    public function canRunInstall()
+    public function canRunUpdate()
     {
 
         vfsStream::setup('dir');
@@ -28,6 +29,29 @@ class UpdateCommandTest extends TestCase
         $command->setApplication($application);
 
         $input = new StringInput('--meedia-file=' . $this->meediaTestFilePath . ' --meedia-lock-file=' . $this->meediaTestLockFilePath);
+        $output = new BufferedOutput();
+
+        $command->run($input, $output);
+
+        self::assertContains('Dummies have been created', $output->fetch());
+        self::assertDirectoryExists(vfsStream::url('dir/test-data'));
+        self::assertFileExists(vfsStream::url('dir/test-data/some-pic-1.png'));
+
+    }
+
+    /** @test */
+    public function canRunUpdateWithGraphicsMagick()
+    {
+
+        vfsStream::setup('dir');
+
+        $application = new Application();
+        $application->add(new InstallCommand());
+
+        $command = new UpdateCommand();
+        $command->setApplication($application);
+
+        $input = new StringInput('--meedia-file=' . $this->meediaGraphicsMagickTestFilePath . ' --meedia-lock-file=' . $this->meediaTestLockFilePath);
         $output = new BufferedOutput();
 
         $command->run($input, $output);
